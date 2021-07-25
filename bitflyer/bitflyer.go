@@ -29,8 +29,7 @@ func New(key, secret string) *APIClient {
 
 func (api APIClient) header(method, endpoint string, body []byte) map[string]string {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	log.Println(timestamp)
-	message := timestamp + method + string(body)
+	message := timestamp + method + endpoint + string(body)
 
 	mac := hmac.New(sha256.New, []byte(api.secret))
 	mac.Write([]byte(message))
@@ -63,6 +62,7 @@ func (api *APIClient) doRequest(method, urlPath string, query map[string]string,
 		q.Add(key, value)
 	}
 	req.URL.RawQuery = q.Encode()
+
 	for key, value := range api.header(method, req.URL.RequestURI(), data) {
 		req.Header.Add(key, value)
 	}
