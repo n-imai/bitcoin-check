@@ -112,8 +112,8 @@ type Ticker struct {
 	BestAskSize     float64 `json:"best_ask_size"`
 	TotalBidDepth   float64 `json:"total_bid_depth"`
 	TotalAskDepth   float64 `json:"total_ask_depth"`
-	MarketBidSize   int     `json:"market_bid_size"`
-	MarketAskSize   int     `json:"market_ask_size"`
+	MarketBidSize   float64 `json:"market_bid_size"`
+	MarketAskSize   float64 `json:"market_ask_size"`
 	Ltp             float64 `json:"ltp"`
 	Volume          float64 `json:"volume"`
 	VolumeByProduct float64 `json:"volume_by_product"`
