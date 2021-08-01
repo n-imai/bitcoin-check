@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"price-check/app/controllers"
 	"price-check/app/models"
 	"price-check/config"
 	"price-check/utils"
@@ -10,4 +11,5 @@ import (
 func main() {
 	utils.LoggingSettings(config.Config.LogFile)
 	fmt.Println(models.DbConnection)
+	controllers.StreamIngestionData()
 }
