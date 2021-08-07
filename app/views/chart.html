@@ -140,7 +140,7 @@
                 dataTable.addColumn('number', 'Volume');
 
                 if (data["smas"] != undefined) {
-                    for (i = 0; i < data['smas'].length; i++){
+                    for (let i = 0; i < data['smas'].length; i++){
                         const smaData = data['smas'][i];
                         if (smaData.length == 0){ continue; }
                         config.dataTable.index += 1;
@@ -156,7 +156,7 @@
                 for(let i=0; i < candles.length; i++){
                     const candle = candles[i];
                     const date = new Date(candle.time);
-                    const dates = [date, candle.low, candle.open, candle.close, candle.high, candle.volume];
+                    const datas = [date, candle.low, candle.open, candle.close, candle.high, candle.volume];
                     if (data["smas"] != undefined) {
                         for (j = 0; j < config.sma.values.length; j++) {
                             if (config.sma.values[j][i] == 0) {
@@ -166,7 +166,7 @@
                             }
                         }
                     }
-                    googleChartData.push(dates)
+                    googleChartData.push(datas)
                 }
 
                 dataTable.addRows(googleChartData);
