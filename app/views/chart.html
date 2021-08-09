@@ -99,6 +99,12 @@
                 periods: [],
                 values: []
             },
+            events: {
+                enable: false,
+                indexes: [],
+                values: [],
+                first: null
+            }
         };
 
         function initConfigValues(){
@@ -125,6 +131,8 @@
             config.hv.indexes = [];
             config.hv.periods = [];
             config.hv.values = [];
+            config.events.indexes = [];
+            config.events.values = [];
         }
 
         function drawChart(dataTable) {
@@ -194,6 +202,17 @@
                 }
             }
 
+            if (config.events.enable == true && config.events.indexes.length > 0){
+                options.series[config.events.indexes[0]] = {
+                    'type': 'line',
+                    tooltip: 'none',
+                    enableInteractivity: false,
+                    lineWidth: 0
+                };
+                view.columns.push(config.candlestick.numViews + config.events.indexes[0]);
+                view.columns.push(config.candlestick.numViews + config.events.indexes[1]);
+            }
+
             if (config.volume.enable == true) {
                 if ($('#volume_div').length == 0) {
                     $('#technical_div').append(
@@ -202,7 +221,7 @@
                         "<div id='volume_chart'></div>" +
                         "</div>")
                 }
-                var volumeChart = new google.visualization.ChartWrapper({
+                const volumeChart = new google.visualization.ChartWrapper({
                     'chartType': 'ColumnChart',
                     'containerId': 'volume_chart',
                     'options': {
@@ -225,10 +244,10 @@
                         "<div id='rsi_chart'></div>" +
                         "</div>")
                 }
-                var up = config.candlestick.numViews + config.rsi.indexes['up'];
-                var value = config.candlestick.numViews + config.rsi.indexes['value'];
-                var down = config.candlestick.numViews + config.rsi.indexes['down'];
-                var rsiChart = new google.visualization.ChartWrapper({
+                const up = config.candlestick.numViews + config.rsi.indexes['up'];
+                const value = config.candlestick.numViews + config.rsi.indexes['value'];
+                const down = config.candlestick.numViews + config.rsi.indexes['down'];
+                const rsiChart = new google.visualization.ChartWrapper({
                     'chartType': 'LineChart',
                     'containerId': 'rsi_chart',
                     'options': {
@@ -256,12 +275,12 @@
                         "<div id='macd_chart'></div>" +
                         "</div>")
                 }
-                var macdColumns = [{'type': 'string'}];
+                const macdColumns = [{'type': 'string'}];
 
                 macdColumns.push(config.candlestick.numViews + config.macd.indexes[2]);
                 macdColumns.push(config.candlestick.numViews + config.macd.indexes[0]);
                 macdColumns.push(config.candlestick.numViews + config.macd.indexes[1]);
-                var macdChart = new google.visualization.ChartWrapper({
+                const macdChart = new google.visualization.ChartWrapper({
                     'chartType': 'ComboChart',
                     'containerId': 'macd_chart',
                     'options': {
@@ -288,14 +307,14 @@
                         "<div id='hv_chart'></div>" +
                         "</div>")
                 }
-                var hvSeries = {};
-                var hvColumns = [{'type': 'string'}];
+                const hvSeries = {};
+                const hvColumns = [{'type': 'string'}];
 
                 for (i = 0; i < config.hv.indexes.length; i++) {
                     hvSeries[config.hv.indexes[i]] = {lineWidth: 1};
                     hvColumns.push(config.candlestick.numViews + config.hv.indexes[i]);
                 }
-                var hvChart = new google.visualization.ChartWrapper({
+                const hvChart = new google.visualization.ChartWrapper({
                     'chartType': 'LineChart',
                     'containerId': 'hv_chart',
                     'options': {
@@ -381,6 +400,10 @@
                 params["hvPeriod3"] = config.hv.periods[2];
             }
 
+            if (config.events.enable == true) {
+                params["events"] = true;
+            }
+
             $.get("/api/candle/", params).done(function (data) {
                 initConfigValues();
                 const dataTable = new google.visualization.DataTable();
@@ -415,11 +438,11 @@
                 }
 
                 if (data['bbands'] != undefined) {
-                    var n = data['bbands']['n'];
-                    var k = data['bbands']['k'];
-                    var up = data['bbands']['up'];
-                    var mid = data['bbands']['mid'];
-                    var down = data['bbands']['down'];
+                    const n = data['bbands']['n'];
+                    const k = data['bbands']['k'];
+                    const up = data['bbands']['up'];
+                    const mid = data['bbands']['mid'];
+                    const down = data['bbands']['down'];
                     config.dataTable.index += 1;
                     config.bbands.indexes[0] = config.dataTable.index;
                     config.dataTable.index += 1;
@@ -434,11 +457,11 @@
                     config.bbands.down = down;
                 }
                 if (data['ichimoku'] != undefined) {
-                    var tenkan = data['ichimoku']['tenkan'];
-                    var kijun = data['ichimoku']['kijun'];
-                    var senkouA = data['ichimoku']['senkoua'];
-                    var senkouB = data['ichimoku']['senkoub'];
-                    var chikou = data['ichimoku']['chikou'];
+                    const tenkan = data['ichimoku']['tenkan'];
+                    const kijun = data['ichimoku']['kijun'];
+                    const senkouA = data['ichimoku']['senkoua'];
+                    const senkouB = data['ichimoku']['senkoub'];
+                    const chikou = data['ichimoku']['chikou'];
 
                     config.dataTable.index += 1;
                     config.ichimoku.indexes[0] = config.dataTable.index;
@@ -479,13 +502,13 @@
                 }
 
                 if (data['macd'] != undefined) {
-                    var macdData = data['macd'];
-                    var fast_period = macdData["fast_period"].toString();
-                    var slow_period = macdData["slow_period"].toString();
-                    var signal_period = macdData["signal_period"].toString();
-                    var macd = macdData["macd"];
-                    var macd_signal = macdData["macd_signal"];
-                    var macd_hist = macdData["macd_hist"];
+                    const macdData = data['macd'];
+                    const fast_period = macdData["fast_period"].toString();
+                    const slow_period = macdData["slow_period"].toString();
+                    const signal_period = macdData["signal_period"].toString();
+                    const macd = macdData["macd"];
+                    const macd_signal = macdData["macd_signal"];
+                    const macd_hist = macdData["macd_hist"];
 
                     config.dataTable.index += 1;
                     config.macd.indexes[0] = config.dataTable.index;
@@ -493,7 +516,7 @@
                     config.macd.indexes[1] = config.dataTable.index;
                     config.dataTable.index += 1;
                     config.macd.indexes[2] = config.dataTable.index;
-                    var speriods = '(' + fast_period + ',' + slow_period + ',' + signal_period +')';
+                    const speriods = '(' + fast_period + ',' + slow_period + ',' + signal_period +')';
                     dataTable.addColumn('number', 'MD' + speriods);
                     dataTable.addColumn('number', 'MS' + speriods);
                     dataTable.addColumn('number', 'HT' + speriods);
@@ -506,12 +529,12 @@
                 }
 
                 if (data['hvs'] != undefined) {
-                    for (i = 0; i < data['hvs'].length; i++){
-                        var hvData = data['hvs'][i];
+                    for (let i = 0; i < data['hvs'].length; i++){
+                        const hvData = data['hvs'][i];
                         if (hvData.length == 0){ continue; }
 
-                        var period = hvData["period"].toString();
-                        var value = hvData["values"];
+                        const period = hvData["period"].toString();
+                        const value = hvData["values"];
 
                         config.dataTable.index += 1;
                         config.hv.indexes[i] = config.dataTable.index;
@@ -519,6 +542,24 @@
                         dataTable.addColumn('number', 'HV(' + period + ')');
                         config.hv.values[i] = hvData["values"];
                         config.hv.periods[i] = period;
+                    }
+                }
+
+                if (data['events'] != undefined) {
+                    config.dataTable.index += 1;
+                    config.events.indexes[0] = config.dataTable.index;
+                    config.dataTable.index += 1;
+                    config.events.indexes[1] = config.dataTable.index;
+
+                    config.events.values = data['events']['signals'];
+                    config.events.first = config.events.values.shift();
+
+                    dataTable.addColumn('number', 'Marker');
+                    dataTable.addColumn({type:'string', role:'annotation'});
+
+                    if (data['events']['profit'] != undefined) {
+                        profit = "¥" + String(Math.round(data['events']['profit'] * 100) / 100);
+                        $('#profit').html("Change:" + profit);
                     }
                 }
 
@@ -590,6 +631,21 @@
                             datas.push(null);
                         } else {
                             datas.push(config.ichimoku.chikou[i]);
+                        }
+                    }
+
+                    if (data['events'] != undefined) {
+                        const event = config.events.first
+                        if (event == undefined) {
+                            datas.push(null);
+                            datas.push(null);
+                        }else if(event.time == candle.time) {
+                            datas.push(candle.high + 1);
+                            datas.push(event.side);
+                            config.events.first = config.events.values.shift();
+                        }else{
+                            datas.push(null);
+                            datas.push(null);
                         }
                     }
 
@@ -766,16 +822,29 @@
                 }
                 send();
             });
+
             $("#inputHvPeriod1").change(function() {
                 config.hv.periods[0] = this.value;
                 send();
             });
+
             $("#inputHvPeriod2").change(function() {
                 config.hv.periods[1] = this.value;
                 send();
             });
+
             $("#inputHvPeriod3").change(function() {
                 config.hv.periods[2] = this.value;
+                send();
+            });
+
+            $('#inputEvents').change(function() {
+                if (this.checked === true) {
+                    config.events.enable = true;
+                } else {
+                    config.events.enable = false;
+                    $('#profit').html("");
+                }
                 send();
             });
         }
@@ -834,6 +903,10 @@
     Period<input id="inputHvPeriod1" type="text" value="21" style="width: 15px;">
     <input id="inputHvPeriod2" type="text" value="63" style="width: 15px;">
     <input id="inputHvPeriod3" type="text" value="252" style="width: 15px;">
+</div>
+
+<div>
+    Events <input id="inputEvents" type="checkbox"> <div id="profit"></div>
 </div>
 
 <div id="dashboard_div">
