@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"price-check/app/controllers"
 	"price-check/config"
 	"price-check/utils"
@@ -9,5 +10,5 @@ import (
 func main() {
 	utils.LoggingSettings(config.Config.LogFile)
 	controllers.StreamIngestionData()
-	controllers.StartWebServer()
+	log.Println(controllers.StartWebServer())
 }

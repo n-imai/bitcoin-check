@@ -1,1 +1,1 @@
-# bitcoin-check
+# price-check
