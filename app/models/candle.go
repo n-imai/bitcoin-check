@@ -73,6 +73,7 @@ func CreateCandleWithDuration(ticker bitflyer.Ticker, productCode string, durati
 		candle.Create()
 		return true
 	}
+
 	if currentCandle.High <= price {
 		currentCandle.High = price
 	} else if currentCandle.Low >= price {

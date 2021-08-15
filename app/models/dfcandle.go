@@ -168,10 +168,9 @@ func (df *DataFrameCandle) AddIchimoku() bool {
 
 func (df *DataFrameCandle) AddRsi(period int) bool {
 	if len(df.Candles) > period {
-		values := talib.Rsi(df.Closes(), period)
 		df.Rsi = &Rsi{
 			Period: period,
-			Values: values,
+			Values: talib.Rsi(df.Closes(), period),
 		}
 		return true
 	}

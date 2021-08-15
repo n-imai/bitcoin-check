@@ -38,7 +38,7 @@ func APIError(w http.ResponseWriter, errMessage string, code int) {
 
 var apiValidPath = regexp.MustCompile("^/api/candle/$")
 
-func apiMakeHandler(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := apiValidPath.FindStringSubmatch(r.URL.Path)
 		if len(m) == 0 {
